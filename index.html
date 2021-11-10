@@ -1,0 +1,195 @@
+<html lang="pt-br" class="h-100">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Gerador de XML para o Inmetro">
+        <meta name="author" content="Echoways">
+        <title>Gerador de XML para o Inmetro</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+        <!-- Favicons -->
+        <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+        <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+        <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+        <link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
+        <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+        <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
+        <meta name="theme-color" content="#7952b3">
+
+        <style>
+            main > .container {
+                padding: 60px 15px 0;
+            }
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body class="d-flex flex-column h-100">
+
+    <header>
+        <!-- Fixed navbar -->
+        <!-- <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Fixed navbar</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav> -->
+    </header>
+
+        <!-- Begin page content -->
+        <main class="flex-shrink-0">
+            <div class="container">
+                <h1 class="mt-5">Gerador de XML para o INMETRO</h1>
+                <p class="lead">Este programa gera o XML para ser enviado ao sistema do Inmetro.</p>
+                <p>Selecione um arquivo com extensão CSV.</p>
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="arquivo" onchange="readFile(this)">
+                    <label class="input-group-text" for="arquivo">Upload</label>
+                </div>
+                <div id="cc"></div>
+            </div>
+        </main>
+
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container">
+                <span class="text-muted">Copyright © 2021 Echoways - Todos os direitos reservados.</span>
+            </div>
+        </footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script>
+
+            function CSVtoArray(text) {
+                var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*(?:;\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*)*$/;
+                var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^;'"\s\\]*(?:\s+[^;'"\s\\]+)*))\s*(?:;|$)/g;
+
+                // Return NULL if input string is not well formed CSV string.
+                if (!re_valid.test(text)) return null;
+
+                var a = []; // Initialize array to receive values.
+                text.replace(re_value, // "Walk" the string using replace with callback.
+                    function(m0, m1, m2, m3) {
+
+                        // Remove backslash from \' in single quoted values.
+                        if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
+
+                        // Remove backslash from \" in double quoted values.
+                        else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
+                        else if (m3 !== undefined) a.push(m3);
+                        return ''; // Return empty string.
+                    });
+
+                // Handle special case of empty last value.
+                if (/,\s*$/.test(text)) a.push('');
+                if (!(a.length > 0)) return null;
+                return a;
+            }
+
+            function makeXML(lista){
+                let xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`;
+                xml += `<ArrayOfItemSolicitacao>`;
+                for(let i = 1; i < lista.length; i++){
+                    xml += `<ItemSolicitacao><Marca>${lista[i][5]}</Marca><Modelo>${lista[i][4]}</Modelo><Descricao>${lista[i][3]}</Descricao><CodigosBarras><Codigo></Codigo></CodigosBarras><PBE IdPAC="59"></PBE></ItemSolicitacao>`;
+                }
+                xml += `</ArrayOfItemSolicitacao>`;
+                // console.log(xml);
+                return xml;
+            }
+
+            function download(filename, text) {
+                var pom = document.createElement('a');
+                pom.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(text));
+                pom.setAttribute('download', filename);
+
+                if (document.createEvent) {
+                    var event = document.createEvent('MouseEvents');
+                    event.initEvent('click', true, true);
+                    pom.dispatchEvent(event);
+                }
+                else {
+                    pom.click();
+                }
+            }
+
+            function parseCSV(csv) {
+                let lista = csv.split("\n").map(
+                    function(item) {
+                        return CSVtoArray(item.replace("\r", ""));
+                    }
+                ).filter((item) => item !== null);
+
+                let html = '<p>Total de registros: <b>' + lista.length + '</b></p>';
+                html += "\n";
+                // for(let i = 0; i < lista.length; i++){
+                //     html += lista[i] + "\n";
+                // }
+                // console.log(lista);
+                let conteudo = makeXML(lista);
+                download("xml-inmetro" + ".xml", conteudo);
+
+                // var i = 0;
+                // html = html + '<table><tr><th>Número<br/>Sorteio</th><th colspan=' + lista[0].length + '>Candidato</th></tr>' + lista.map(function (linha) {
+
+                //     return '<tr><td class="nsort">' + (++i) + '</td>' + linha.map(function(coluna) {
+                //         return '<td>' + coluna + '</td>';
+                //     }).join("") + '</tr>\n';
+                // }).join("") + '</table>';
+
+                document.getElementById('cc').innerHTML = html;
+
+                // listaCandidatos = lista;
+            }
+
+            // upload do arquivo
+            function readFile(input) {
+                let file = input.files[0];
+                if (file.name.substring(file.name.length -4) !== '.csv') {
+                    alert('Formato inválido!');
+                    return;
+                }
+
+                let reader = new FileReader();
+
+                reader.onload = function() {
+                    parseCSV(reader.result);
+                };
+
+                reader.onerror = function() {
+                    alert("Arquivo inválido!");
+                };
+
+                reader.readAsText(file);
+            }
+        </script>
+    </body>
+</html>
