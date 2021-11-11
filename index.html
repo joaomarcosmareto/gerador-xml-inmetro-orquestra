@@ -119,7 +119,7 @@
                 let xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`;
                 xml += `<ArrayOfItemSolicitacao>`;
                 for(let i = 1; i < lista.length; i++){
-                    xml += `<ItemSolicitacao><Marca>${lista[i][5]}</Marca><Modelo>${lista[i][4]}</Modelo><Descricao>${lista[i][3]}</Descricao><CodigosBarras><Codigo></Codigo></CodigosBarras><PBE IdPAC="59"></PBE></ItemSolicitacao>`;
+                    xml += `<ItemSolicitacao><Marca>${lista[i][5]}</Marca><Modelo>${lista[i][4]}</Modelo><Descricao>${lista[i][3]}</Descricao><CodigosBarras><Codigo></Codigo></CodigosBarras></ItemSolicitacao>`;
                 }
                 xml += `</ArrayOfItemSolicitacao>`;
                 // console.log(xml);
