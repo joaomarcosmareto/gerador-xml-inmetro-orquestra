@@ -119,10 +119,22 @@
                 let xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`;
                 xml += `<ArrayOfItemSolicitacao>`;
                 for(let i = 1; i < lista.length; i++){
-                    xml += `<ItemSolicitacao><Marca>${lista[i][5]}</Marca><Modelo>${lista[i][4]}</Modelo><Descricao>${lista[i][3]}</Descricao><CodigosBarras><Codigo></Codigo></CodigosBarras></ItemSolicitacao>`;
+                    xml += `    <ItemSolicitacao>\n`;
+                    xml += `        <Marca>${lista[i][2]}</Marca>\n`;//[2]
+                    xml += `        <Modelo>${lista[i][1]}</Modelo>\n`;//[1]
+                    xml += `        <Descricao>${lista[i][0]}</Descricao>\n`;//[0]
+                    xml += `        <CodigosBarras><Codigo></Codigo></CodigosBarras>\n`;
+                    xml += `        <PBE IdPAC="59">\n`;
+                    xml += `            <C235>${lista[i][3]}</C235>\n`;//[3]
+                    xml += `            <C236>${lista[i][4]}</C236>\n`;//[4]
+                    xml += `            <C237>${lista[i][5]}</C237>\n`;//[5]
+                    xml += `            <C238>${lista[i][6]}</C238>\n`;//[6]
+                    xml += `            <C239>${lista[i][7]}</C239>\n`;//[7]
+                    xml += `            <C240>${lista[i][8]}</C240>\n`;//[8]
+                    xml += `        </PBE>\n`;
+                    xml += `    </ItemSolicitacao>\n`;
                 }
                 xml += `</ArrayOfItemSolicitacao>`;
-                // console.log(xml);
                 return xml;
             }
 
