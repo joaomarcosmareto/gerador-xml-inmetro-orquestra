@@ -34,6 +34,11 @@
                     font-size: 3.5rem;
                 }
             }
+            p.lead {
+                font-size: 1rem;
+                margin-bottom: 5;
+            }
+            ol > li {font-weight: 300;}
         </style>
     </head>
     <body class="d-flex flex-column h-100">
@@ -71,7 +76,24 @@
         <main class="flex-shrink-0">
             <div class="container">
                 <h1 class="mt-5">Gerador de XML para o INMETRO</h1>
-                <p class="lead">Este programa gera o XML para ser enviado ao sistema do Inmetro.</p>
+                <p class="lead">Este programa gera o XML para ser enviado ao sistema do Inmetro a partir de um arquivo com extensão CSV.</p>
+                <br />
+                <p class="lead">Para gerar o arquivo CSV, deve-se abrir a planilha excel (xls ou xlsx) e ir na opção "salvar como", escolhendo o tipo "csv utf-8".</p>
+                <br />
+                <p class="lead">De acordo com o sistema ORQUESTRA, as seguintes colunas são obrigatórios até o momento e devem estar na seguinte ordem:
+                    <ol>
+                        <li>descrição</li>
+                        <li>modelo</li>
+                        <li>marca</li>
+                        <li>valor de resistência ao rolamento</li>
+                        <li>classificação de resistência ao rolamento</li>
+                        <li>valor de aderência à pista molhada</li>
+                        <li>classificação de aderência à pista molhada</li>
+                        <li>valor de emissão de ruído (noise)</li>
+                        <li>classificação de emissão de ruído (noise)</li>
+                    </ol>    
+                </p>
+                <br />
                 <p>Selecione um arquivo com extensão CSV.</p>
                 <div class="input-group mb-3">
                     <input type="file" class="form-control" id="arquivo" onchange="readFile(this)">
